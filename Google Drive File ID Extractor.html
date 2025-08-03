@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Google Drive File ID Extractor</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: #f8fafc; }
+    .container { max-width: 500px; margin-top: 80px; }
+    .id-box { font-size: 1.1rem; background: #fff; border-radius: 0.4rem; padding: 0.9rem; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <div class="container shadow p-4 rounded bg-white">
+    <h3 class="mb-3 text-primary">Google Drive File ID Extractor</h3>
+    <div class="mb-3">
+      <label for="linkInput" class="form-label">Paste your Google Drive link:</label>
+      <input type="text" id="linkInput" class="form-control" placeholder="Enter Google Drive file link">
+    </div>
+    <div id="result" class="mb-3" style="display: none;">
+      <div class="id-box d-flex justify-content-between align-items-center">
+        <span id="fileId"></span>
+        <button id="copyBtn" class="btn btn-outline-primary btn-sm">Copy ID</button>
+      </div>
+      <span id="copyMsg" class="text-success ms-2" style="display: none;">Copied!</span>
+    </div>
+    <button class="btn btn-primary" onclick="extractId()">Extract File ID</button>
+  </div>
+  
+  <script>
+    function extractId() {
+      const input = document.getElementById('linkInput').value;
+      let regex = /\/d\/([a-zA-Z0-9_-]{10,})|id=([a-zA-Z0-9_-]{10,})/;
+      let match = input.match(regex);
+      let fileId = match ? (match[1] || match[2]) : '';
+      document.getElementById('fileId').textContent = fileId || 'No valid ID found.';
+      document.getElementById('result').style.display = fileId ? 'block' : 'none';
+      document.getElementById('copyMsg').style.display = 'none';
+    }
+
+    document.getElementById('copyBtn').addEventListener('click', () => {
+      let id = document.getElementById('fileId').textContent;
+      if (id && id !== 'No valid ID found.') {
+        navigator.clipboard.writeText(id);
+        document.getElementById('copyMsg').style.display = 'inline';
+        setTimeout(() => {
+          document.getElementById('copyMsg').style.display = 'none';
+        }, 1200);
+      }
+    });
+  </script>
+</body>
+</html>
